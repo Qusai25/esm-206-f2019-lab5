@@ -61,6 +61,7 @@ lobster_tidy <- lobster_abundance %>%
   tidyr::uncount(lobster_count)
 ```
 
+
 Now each lobster observed has been placed into its own *row* - which is good, because now we don't have to worry about weights when we find summary statistics. 
 
 #### 4. Always look at your data. Always. 
@@ -74,17 +75,21 @@ ggplot(lobster_tidy, aes(x = site, y = size_mm)) +
 
 # Violin plot: 
 ggplot(lobster_tidy, aes(x = site, y = size_mm)) +
-  geom_violin()
+  geom_violin(aes(color = site))
 
 # Histogram:
 ggplot(lobster_tidy, aes(x = size_mm)) +
-  geom_histogram() +
-  facet_wrap(~site)
+  geom_histogram(aes(fill = site)) +
+  facet_wrap(~site, scales = "free") # gives you different graphs instead of putting it all in one
+
+#if you want to put each group to have seperate scales, you can do this:facet_wrap(~site, scales = "free")
+
+
 
 # Quantile-quantile plot: 
 ggplot(lobster_tidy, aes(sample = size_mm)) +
   geom_qq() +
-  facet_wrap(~site)
+  facet_wrap(~site, scales = "free")
 
 ```
 
