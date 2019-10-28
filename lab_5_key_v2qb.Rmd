@@ -158,11 +158,37 @@ There are a bunch of ways to count things based on different variables in R. So 
 
 ##### `count()` example 1: Count the number of lobsters by year and month:
 
+
+```{r}
+#count lobsters by different groupings...
+
+#Let's say I want to count the number of lobsters by year and month
+
+
+```
+
+
 ```{r}
 lobster_ym <- lobster_parse_date %>% 
   count(obs_year, obs_month)
 
 lobster_ym
+
+
+lobster_site <- lobster_parse_date %>% 
+  count(obs_year, obs_month, site = "carp", size_mm)
+
+lobster_site
+
+#group _by + summarize +n()
+
+lobster_summary <- lobster_parse_date %>% 
+  group_by(site) %>%
+  summarise(mean_size =
+              mean(size_mm, na.rm = TRUE))
+
+
+
 ```
 
 ##### `count()` example 2: Count the number of lobsters by year and site:
@@ -233,13 +259,15 @@ More information on tally/count: see descriptions and examples from [tidyverse.o
 
 So we found the mean and sd of lobster sizes (see object *lobster_summary*). Let's say we want to find the confidence interval and/or standard error for lobsters at the different sites?
 
-We can use the `t.test()` function to find confidence intervals. First, I'll isolate the IVEE lobster lengths and find a 95% confidence interval. 
+We can use the `t.test()` function to find confidence intervals and perform t-tsts. First, I'll isolate the IVEE lobster lengths and find a 95% confidence interval. 
 ```{r}
 ivee_lobsters <- lobster_tidy %>% 
   filter(site == "IVEE") %>% 
   pull(size_mm)
 
 t.test(ivee_lobsters) 
+
+View(ivee_lobsters)
 
 # What does this 95% CI of [72.99, 74.17] mm mean? 
 ```
@@ -312,7 +340,29 @@ ggplot(data = lobster_ysite, aes(x = obs_year, y = site)) +
        y = "Site")
 ```
 
+two sample t-test:
+IS there a significant difference in mean lobster lengthsbetween Naples Reef and Mohalk Reef?
+
+```{r}
+napl_sample <- lobster_tidy %>% 
+  filter(site == "NAPL") %>%
+  pull(size_mm)
 
 
+
+```
+mean lobster size differed significantly between mohalk and Naples reefs (t(`r mohk_napl_ttest$parameter`) = 19.849)
+
+maybe their is an easier way
+```{r}
+lobster_2sample <- lobster_tidy %>% 
+  filter(site %in% c("NAPL", "MOHK"))
+
+
+```
+
+
+
+# R knows this as statisctics
 
 #### END LAB.
